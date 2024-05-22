@@ -1,0 +1,31 @@
+version: '3.3'
+
+services:
+  database:
+    image:
+      postgres
+    ports:
+      - 5438:5438
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=2003
+      - POSTGRES_DB=app_db
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data
+
+  application:
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - 81:8081
+    depends_on:
+      - database
+    environment:
+      - "SPRING_DATASOURCE_USERNAME=postgres"
+      - "SPRING_DATASOURCE_PASSWORD=2003"
+      - "SPRING_DATASOURCE_URL=jdbc:postgresql://database/app_db"
+
+volumes:
+  postgres_volume:
+      external: true
+
